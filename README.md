@@ -1,4 +1,4 @@
-# RetrofitKotlin
+# CryptoApp (RetrofitKotlin) 
 
 This project is developed for crypto currency application.
 
