@@ -12,7 +12,6 @@ import com.example.retrofitkotlin.adapter.CryptoAdapter
 import com.example.retrofitkotlin.databinding.ActivityMainBinding
 import com.example.retrofitkotlin.model.CryptoModel
 import com.example.retrofitkotlin.service.CryptoAPI
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity(),CryptoAdapter.Listener {
     private var recyclerViewAdapter : CryptoAdapter? = null
     private val BASE_URL = "https://api.wazirx.com/sapi/v1/tickers/"
     private var cryptoModels: ArrayList<CryptoModel>? = null
-    private var cryptoModelsForChange: ArrayList<CryptoModel>? = null
     var runnable : Runnable = Runnable {  }
     var handler : Handler = Handler(Looper.getMainLooper())
 
@@ -33,8 +31,6 @@ class MainActivity : AppCompatActivity(),CryptoAdapter.Listener {
         println("Error: ${throwable.localizedMessage}")
     }
 
-    //Disposable
-    private var compositeDisposable: CompositeDisposable? = null
     private var job: Job?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,19 +48,6 @@ class MainActivity : AppCompatActivity(),CryptoAdapter.Listener {
 
        runnable = object : Runnable {
             override fun run() {
-               /* //cryptoModels?.clear()
-                val retrofit = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .build().create(CryptoAPI::class.java)
-
-                compositeDisposable?.add(retrofit.getData()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this@MainActivity::handleResponse))
-
-                handler.postDelayed(this,3000)*/
                 loadData()
                 handler.postDelayed(this,3000)
             }
@@ -89,9 +72,9 @@ class MainActivity : AppCompatActivity(),CryptoAdapter.Listener {
             withContext(Dispatchers.Main + exceptionHandler){
                 if (respones.isSuccessful){
                     respones.body()?.let {
-                        cryptoModelsForChange= ArrayList(it)
-                        cryptoModelsForChange?.let {
-                            cryptoModelsForChange!!.removeIf {
+                        cryptoModels= ArrayList(it)
+                        cryptoModels?.let {
+                            cryptoModels!!.removeIf {
                                 it.quoteAsset!="usdt"
                             }
                                     recyclerViewAdapter=CryptoAdapter(it,this@MainActivity)
