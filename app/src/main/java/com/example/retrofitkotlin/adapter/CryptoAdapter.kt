@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitkotlin.databinding.ActivityRecyclerRowBinding
 import com.example.retrofitkotlin.model.CryptoModel
 import com.squareup.picasso.Picasso
-import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CryptoAdapter(private val cryptoList:ArrayList<CryptoModel>, private val listener: Listener):RecyclerView.Adapter<CryptoAdapter.Holder>() {
@@ -28,25 +28,22 @@ class CryptoAdapter(private val cryptoList:ArrayList<CryptoModel>, private val l
     }
 
 
-    @SuppressLint("SetTextI18n", "SuspiciousIndentation")
+
+    @SuppressLint("SuspiciousIndentation")
     override fun onBindViewHolder(holder: Holder, position: Int) {
 
-       holder.itemView.setOnClickListener(){
+       holder.itemView.setOnClickListener()
+       {
            listener.onItemClick(cryptoList.get(position))
-           }
+       }
 
-
-
-
-
-        var imageUrl = "https://res.cloudinary.com/dxi90ksom/image/upload/"
+        val imageUrl = "https://res.cloudinary.com/dxi90ksom/image/upload/"
         //holder.itemView.setBackgroundColor(Color.parseColor(colors[position % 8]))
         holder.binding.txtCryptoName.text = cryptoList.get(position).baseAsset
         holder.binding.textView2.text = String.format(cryptoList.get(position).bidPrice+ " $")
-
-            Picasso.get().load(imageUrl+ cryptoList.get(position).baseAsset.lowercase() +".png").into(holder.binding.imageView)
-
+        Picasso.get().load(imageUrl+ cryptoList.get(position).baseAsset.lowercase() +".png").into(holder.binding.imageView)
 
     }
+
 
 }
