@@ -29,6 +29,10 @@ class MainActivity : AppCompatActivity(),CryptoAdapter.Listener {
     var runnable : Runnable = Runnable {  }
     var handler : Handler = Handler(Looper.getMainLooper())
 
+    val exceptionHandler= CoroutineExceptionHandler { coroutineContext, throwable ->
+        println("Error: ${throwable.localizedMessage}")
+    }
+
     //Disposable
     private var compositeDisposable: CompositeDisposable? = null
     private var job: Job?=null
@@ -82,7 +86,7 @@ class MainActivity : AppCompatActivity(),CryptoAdapter.Listener {
 
         job= CoroutineScope(Dispatchers.IO).launch {
             val respones=retrofit.getData()
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main + exceptionHandler){
                 if (respones.isSuccessful){
                     respones.body()?.let {
                         cryptoModelsForChange= ArrayList(it)
